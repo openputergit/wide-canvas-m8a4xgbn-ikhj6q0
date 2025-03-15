@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nikhil Darji - Portfolio & Event Tickets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(120deg, #1a202c 0%, #2d3748 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white p-4 fixed w-full top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Nikhil Darji</h1>
+            <div class="space-x-6">
+                <a href="#portfolio" class="hover:text-blue-300">Portfolio</a>
+                <a href="#tickets" class="hover:text-blue-300">Book Tickets</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="pt-24 pb-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Portfolio</h2>
+            
+            <!-- Profile Info -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400" 
+                         alt="Profile" 
+                         class="rounded-full w-48 h-48 object-cover">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Nikhil Darji</h3>
+                        <p class="text-gray-600 mb-4">Full Stack Developer & Blockchain Enthusiast</p>
+                        <div class="flex gap-4">
+                            <a href="https://www.linkedin.com/in/nikhil-darji-899625248/" 
+                               target="_blank"
+                               class="flex items-center gap-2 text-blue-600 hover:text-blue-800">
+                                <i class="bi bi-linkedin"></i> LinkedIn
+                            </a>
+                            <a href="#" class="flex items-center gap-2 text-gray-600 hover:text-gray-800">
+                                <i class="bi bi-github"></i> GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project 1 -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500" 
+                         alt="Project" 
+                         class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold mb-2">Blockchain Ticket System</h4>
+                        <p class="text-gray-600">A decentralized ticket booking platform using smart contracts.</p>
+                    </div>
+                </div>
+                <!-- Add more projects as needed -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Ticket Booking Section -->
+    <section id="tickets" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Book Event Tickets</h2>
+            
+            <!-- Events List -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="events-container">
+                <!-- Events will be populated here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4">Book Tickets</h3>
+            <div class="mb-4">
+                <label class="block mb-2">Number of Tickets</label>
+                <input type="number" id="ticket-quantity" min="1" max="10" value="1" 
+                       class="w-full border rounded p-2">
+            </div>
+            <div class="flex justify-end gap-4">
+                <button onclick="closeModal()" 
+                        class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Cancel</button>
+                <button onclick="processBooking()" 
+                        class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    Book Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample events data
+        const events = [
+            {
+                id: 1,
+                name: "Concert in the Park",
+                date: "2024-02-20",
+                price: 0.01,
+                image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=500"
+            },
+            {
+                id: 2,
+                name: "Theater Show",
+                date: "2024-02-25",
+                price: 0.015,
+                image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500"
+            },
+            {
+                id: 3,
+                name: "Comedy Night",
+                date: "2024-03-01",
+                price: 0.008,
+                image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=500"
+            }
+        ];
+
+        let selectedEvent = null;
+
+        // Populate events
+        function displayEvents() {
+            const container = document.getElementById('events-container');
+            container.innerHTML = events.map(event => `
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <img src="${event.image}" alt="${event.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h4 class="font-bold mb-2">${event.name}</h4>
+                        <p class="text-gray-600">Date: ${event.date}</p>
+                        <p class="text-gray-600 mb-4">Price: ${event.price} ETH</p>
+                        <button onclick="openBooking(${event.id})" 
+                                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                            Book Now
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Modal functions
+        function openBooking(eventId) {
+            selectedEvent = events.find(e => e.id === eventId);
+            document.getElementById('booking-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('booking-modal').classList.add('hidden');
+        }
+
+        async function processBooking() {
+            if (!selectedEvent) return;
+
+            const quantity = parseInt(document.getElementById('ticket-quantity').value);
+            const totalPrice = selectedEvent.price * quantity;
+
+            try {
+                // Connect to MetaMask
+                if (typeof window.ethereum !== 'undefined') {
+                    const provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    const signer = provider.getSigner();
+
+                    // Create transaction
+                    const transaction = {
+                        to: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", // Example contract address
+                        value: ethers.utils.parseEther(totalPrice.toString())
+                    };
+
+                    // Send transaction
+                    const tx = await signer.sendTransaction(transaction);
+                    alert(`Booking successful! Transaction Hash: ${tx.hash}`);
+                    closeModal();
+                } else {
+                    alert("Please install MetaMask to book tickets!");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error processing booking. Please try again.");
+            }
+        }
+
+        // Initialize
+        displayEvents();
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
